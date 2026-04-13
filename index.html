@@ -527,7 +527,16 @@
             <div class="section-sub">Platform footprint and paid campaign data.</div>
           </div>
         </div>
-        <canvas id="socialChart" width="600" height="330"></canvas>
+        <div style="display:grid; gap:16px;">
+        <div>
+          <h3 style="margin-bottom:6px;">Followers</h3>
+          <canvas id="socialFollowersChart" width="600" height="260"></canvas>
+        </div>
+        <div>
+          <h3 style="margin-bottom:6px;">Views</h3>
+          <canvas id="socialViewsChart" width="600" height="260"></canvas>
+        </div>
+        </div>
         <div class="small-list" id="socialSummary"></div>
       </div>
 
@@ -1032,7 +1041,8 @@
       renderList(socialSummary, data.social.summary);
       renderList(grantSummary, data.grants.items);
       renderList(needNow, data.needNow);
-      drawBarChart('socialChart', data.social.platforms, '#4b6cff');
+      drawBarChart('socialFollowersChart', data.social.platforms.filter(p => p.label.includes('followers') || p.label.includes('subscribers')), '#4b6cff');
+      drawBarChart('socialViewsChart', data.social.platforms.filter(p => p.label.includes('views')), '#57d6e6');
       drawProgress('grantChart', data.grants.achieved, data.grants.required);
       drawBarChart('capacityChart', data.capacity, '#f5a524');
       visionSort.addEventListener('change', renderVision);
