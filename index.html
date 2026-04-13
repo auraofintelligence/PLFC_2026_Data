@@ -610,6 +610,28 @@
       </div>
     </section>
 
+    <section class="grid-2" id="clubsSection">
+      <div class="glass section-card">
+        <div class="section-header">
+          <div>
+            <h2>Island Club Comparison</h2>
+            <div class="section-sub">Fair comparison of structure, cadence, and positioning.</div>
+          </div>
+        </div>
+        <div class="bars" id="clubBars"></div>
+      </div>
+
+      <div class="glass section-card">
+        <div class="section-header">
+          <div>
+            <h2>Key Differences</h2>
+            <div class="section-sub">Traditional vs modern operating models.</div>
+          </div>
+        </div>
+        <div class="small-list" id="clubCompare"></div>
+      </div>
+    </section>
+
     <nav class="sticky-mobile-nav" aria-label="Quick navigation">
       <a href="#timelineSection">Timeline</a>
       <a href="#socialSection">Reach</a>
@@ -620,6 +642,23 @@
 
   <script>
     const data = {
+      clubs: {
+        metrics: [
+          { label: 'PLFC (Incorporated)', value: 80 },
+          { label: 'Amity Point Club', value: 60 },
+          { label: 'Little Ships Club', value: 60 }
+        ],
+        compare: [
+          ['Structure', 'PLFC: Incorporated | Others: Sub-committees'],
+          ['History', 'Amity: Longest running | Little Ships: Established | PLFC: New'],
+          ['Events/year', 'PLFC: selective | Others: ~10–11 comps'],
+          ['Digital presence', 'PLFC: strong | Others: none'],
+          ['Style', 'PLFC: structured + scalable | Others: informal + local'],
+          ['Positioning', 'PLFC: flagship sustainable event | Others: regular comps'],
+          ['Strength', 'Others: consistency + community | PLFC: systems + growth potential'],
+          ['Gap', 'PLFC: consistency | Others: digital + scale']
+        ]
+      },
       chips: [
         'Club formed 2024',
         'ABN + bank + constitution in place',
@@ -1031,6 +1070,8 @@
     }
 
     function init() {
+      renderBars(document.getElementById('clubBars'), data.clubs.metrics);
+      renderList(document.getElementById('clubCompare'), data.clubs.compare);
       renderChips();
       renderModes();
       renderKPIs();
