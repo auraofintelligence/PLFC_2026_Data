@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PLFC AGM Dashboard</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #121a2b;
+      --panel-2: #18233a;
+      --text: #e8eefc;
+      --muted: #9fb0d0;
+      --accent: #66b3ff;
+      --accent-2: #39d0c5;
+      --warn: #ffb454;
+      --bad: #ff6b6b;
+      --good: #67e08a;
+      --border: rgba(255,255,255,0.08);
+      --shadow: 0 10px 30px rgba(0,0,0,0.28);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #09101c 0%, #0b1220 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1.05; }
+    h2 { font-size: 1.05rem; margin-bottom: 12px; }
+    h3 { font-size: 0.95rem; }
+    .sub { color: var(--muted); margin-top: 10px; line-height: 1.4; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .chip {
+      font-size: 0.83rem;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(102,179,255,0.12);
+      border: 1px solid rgba(102,179,255,0.2);
+      color: #dcebff;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .kpi {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .kpi .label { color: var(--muted); font-size: 0.82rem; }
+    .kpi .value { font-size: clamp(1.4rem, 2vw, 2rem); font-weight: 800; margin-top: 6px; }
+    .kpi .meta { color: var(--muted); font-size: 0.78rem; margin-top: 4px; }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin: 6px 0 16px;
+    }
+    .btn, select {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .btn.active { outline: 2px solid rgba(102,179,255,0.4); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 16px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .section-header small { color: var(--muted); }
+
+    .timeline {
+      display: grid;
+      gap: 10px;
+    }
+    .t-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .t-date {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding-top: 3px;
+    }
+    .t-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .t-box p {
+      color: var(--muted);
+      line-height: 1.45;
+      margin-top: 6px;
+      font-size: 0.92rem;
+    }
+
+    .bars { display: grid; gap: 12px; }
+    .bar-row { display: grid; gap: 6px; }
+    .bar-head { display: flex; justify-content: space-between; font-size: 0.9rem; }
+    .bar-bg {
+      height: 12px;
+      background: #0e1524;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 999px;
+    }
+
+    .table-wrap { overflow: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+    th { color: var(--muted); font-weight: 600; }
+    td:last-child, th:last-child { text-align: right; }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04);
+    }
+    .good { color: var(--good); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+
+    .radar-legend, .small-list { display: grid; gap: 8px; }
+    .small-list div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .small-list b { color: var(--text); font-weight: 600; }
+
+    canvas {
+      width: 100%;
+      max-width: 100%;
+      display: block;
+      background: transparent;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1050px) {
+      .hero, .grid, .grid-2, .kpi-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 760px) {
+      .hero, .grid, .grid-2, .kpi-grid { grid-template-columns: 1fr; }
+      .t-row { grid-template-columns: 1fr; }
+      .wrap { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card">
+        <h1>PLFC AGM Dashboard</h1>
+        <p class="sub">Point Lookout Fishing Club Inc. progress snapshot from formation through AGM prep. Interactive, single-file, GitHub-hostable.</p>
+        <div class="chips" id="summaryChips"></div>
+      </div>
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Mode</h2>
+            <small>Switch emphasis without changing the underlying data.</small>
+          </div>
+        </div>
+        <div class="controls" id="modeButtons"></div>
+        <div class="small-list" id="modeSummary"></div>
+      </div>
+    </section>
+
+    <section class="kpi-grid" id="kpiGrid"></section>
+
+    <section class="grid">
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Timeline</h2>
+            <small>Major phases, outputs, and resets.</small>
+          </div>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Vision Progress</h2>
+            <small>Estimated completion against original plan and constitution intent.</small>
+          </div>
+          <select id="visionSort">
+            <option value="desc">Highest first</option>
+            <option value="asc">Lowest first</option>
+          </select>
+        </div>
+        <canvas id="radar" width="500" height="380" aria-label="Vision radar chart"></canvas>
+        <div class="bars" id="visionBars"></div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Social + Reach</h2>
+            <small>Platform footprint and paid campaign data.</small>
+          </div>
+        </div>
+        <canvas id="socialChart" width="600" height="330"></canvas>
+        <div class="small-list" id="socialSummary"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Systems Built</h2>
+            <small>Operational backbone already in place.</small>
+          </div>
+        </div>
+        <div class="bars" id="systemsBars"></div>
+        <div class="footer-note">Systems exist across governance, content, automation, and app planning. Adoption and shared use remain the main gap.</div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Shortcomings → Remedies</h2>
+            <small>Constraint mapping.</small>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Issue</th>
+                <th>Severity</th>
+                <th>Remedy</th>
+              </tr>
+            </thead>
+            <tbody id="issuesTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Grant Readiness</h2>
+            <small>Where vision aligns and where proof is still thin.</small>
+          </div>
+        </div>
+        <canvas id="grantChart" width="600" height="300"></canvas>
+        <div class="small-list" id="grantSummary"></div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Skills + Capacity</h2>
+            <small>Operational concentration by capability area.</small>
+          </div>
+        </div>
+        <canvas id="capacityChart" width="600" height="300"></canvas>
+        <div class="footer-note">This is a simplified operating view for AGM discussion, not a judgment of people.</div>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <div>
+            <h2>Need Now</h2>
+            <small>Practical asks for the next cycle.</small>
+          </div>
+        </div>
+        <div class="small-list" id="needNow"></div>
+        <div class="footer-note">Long-term goal: a scalable fishing, events, education, conservation, and digital ecosystem anchored by PLFC and supported by repeatable systems.</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const data = {
+      chips: [
+        'Club formed 2024',
+        'ABN + bank + constitution in place',
+        'Website + socials live',
+        'First comp delivered',
+        'Paid campaign tested',
+        'App + automation planned'
+      ],
+      modes: {
+        honest: {
+          label: 'Honest view',
+          summary: [
+            ['Foundation', 'Strong'],
+            ['Execution', 'Inconsistent'],
+            ['Capacity', 'Thin'],
+            ['Direction', 'Simplify + share load']
+          ]
+        },
+        achievements: {
+          label: 'Achievements',
+          summary: [
+            ['Governance', 'Established'],
+            ['Digital stack', 'Built'],
+            ['Public reach', 'Proven'],
+            ['Innovation', 'Above typical club level']
+          ]
+        },
+        readiness: {
+          label: 'Next cycle',
+          summary: [
+            ['Immediate priority', 'Volunteers + delegation'],
+            ['Ops model', 'School holiday comps'],
+            ['Revenue', 'BBQs + merch planning'],
+            ['Grant path', 'Evidence + repetition']
+          ]
+        }
+      },
+      kpis: [
+        { label: 'Meetings logged', value: '13±', meta: 'Approximate lifetime count' },
+        { label: 'Followers', value: '328+', meta: 'FB + IG + TikTok + YouTube subscribers' },
+        { label: 'Views', value: '60k+', meta: 'Facebook yearly views' },
+        { label: 'Paid likes', value: '75', meta: '$53.84 spend, ~$0.72 per like' }
+      ],
+      timeline: [
+        {
+          date: 'Oct 2024',
+          title: 'Formation',
+          body: 'Club launched, committee elected, constitution adopted, initial governance established.'
+        },
+        {
+          date: 'Late 2024',
+          title: 'Backbone setup',
+          body: 'ABN, bank account, website, Gmail, Drive, WhatsApp, and public profiles established.'
+        },
+        {
+          date: 'Apr–Jul 2025',
+          title: 'Activation',
+          body: 'First competition delivered, campaign tested, workflow docs and reporting started, systems expanded.'
+        },
+        {
+          date: 'Late 2025',
+          title: 'Slowdown',
+          body: 'Meeting continuity broadly held, but documentation quality and regular output reduced.'
+        },
+        {
+          date: '2026',
+          title: 'Reset',
+          body: 'Simpler operating model: school holiday comps, BBQ focus, clearer need for volunteers and shared responsibility.'
+        }
+      ],
+      vision: [
+        { label: 'Club formation', value: 100 },
+        { label: 'Governance', value: 80 },
+        { label: 'Digital systems', value: 85 },
+        { label: 'Events', value: 45 },
+        { label: 'Community growth', value: 55 },
+        { label: 'Sponsorship', value: 40 },
+        { label: 'Grant readiness', value: 25 },
+        { label: 'App / AI vision', value: 60 }
+      ],
+      social: {
+        platforms: [
+          { label: 'Facebook followers', value: 261 },
+          { label: 'Instagram followers', value: 56 },
+          { label: 'TikTok followers', value: 7 },
+          { label: 'YouTube subscribers', value: 4 },
+          { label: 'TikTok views', value: 995 },
+          { label: 'YouTube views', value: 643 }
+        ],
+        summary: [
+          ['Facebook views', '60,000+ / year'],
+          ['Ad reach', '4,655'],
+          ['Impressions', '7,771'],
+          ['Ad spend', '$53.84'],
+          ['Avg cost per like', '$0.72']
+        ]
+      },
+      systems: [
+        { label: 'Governance docs', value: 100 },
+        { label: 'Identity + banking', value: 100 },
+        { label: 'Website + domain', value: 100 },
+        { label: 'Social channels', value: 95 },
+        { label: 'Google workspace stack', value: 80 },
+        { label: 'Content templates', value: 75 },
+        { label: 'Automation layer', value: 45 },
+        { label: 'App architecture', value: 50 }
+      ],
+      issues: [
+        { issue: 'Irregular output consistency', severity: 'High', remedy: 'Simpler calendar + assign owners' },
+        { issue: 'Volunteer shortage', severity: 'High', remedy: 'Actively recruit event and content helpers' },
+        { issue: 'Tech dependence on one person', severity: 'High', remedy: 'Basic onboarding for 3–4 helpers' },
+        { issue: 'Minutes / records patchy', severity: 'Medium', remedy: 'Template agenda + fixed meeting format' },
+        { issue: 'Grant evidence thin', severity: 'High', remedy: 'Repeat events + track attendance, outcomes, photos' },
+        { issue: 'Insurance friction', severity: 'Medium', remedy: 'Choose one clear insurance path and document it' }
+      ],
+      grants: {
+        achieved: 35,
+        required: 100,
+        items: [
+          ['Vision alignment', 'Strong'],
+          ['Operational proof', 'Limited'],
+          ['Repeat events', 'Needed'],
+          ['Tracking + reporting', 'Needed'],
+          ['Volunteer depth', 'Needed']
+        ]
+      },
+      capacity: [
+        { label: 'Admin / governance', value: 65 },
+        { label: 'Events', value: 55 },
+        { label: 'Digital / tech', value: 25 },
+        { label: 'Social content', value: 35 },
+        { label: 'Finance admin', value: 50 },
+        { label: 'Volunteer depth', value: 20 }
+      ],
+      needNow: [
+        ['More volunteers', 'Event setup, BBQs, photos, posting, admin'],
+        ['More shared access', 'Do not rely on one paid private stack'],
+        ['Regular structure', 'Agenda, short meeting notes, action list'],
+        ['Evidence for grants', 'Attendance, outcomes, photos, testimonials'],
+        ['Realistic cadence', 'School holiday comps + pre-event meetings'],
+        ['Long-term goal', 'A sustainable fishing club with events, education, data, sponsors, and app-enabled growth']
+      ]
+    };
+
+    const summaryChips = document.getElementById('summaryChips');
+    const modeButtons = document.getElementById('modeButtons');
+    const modeSummary = document.getElementById('modeSummary');
+    const kpiGrid = document.getElementById('kpiGrid');
+    const timelineEl = document.getElementById('timeline');
+    const visionBars = document.getElementById('visionBars');
+    const socialSummary = document.getElementById('socialSummary');
+    const systemsBars = document.getElementById('systemsBars');
+    const issuesTable = document.getElementById('issuesTable');
+    const grantSummary = document.getElementById('grantSummary');
+    const needNow = document.getElementById('needNow');
+    const visionSort = document.getElementById('visionSort');
+
+    let currentMode = 'honest';
+
+    function renderChips() {
+      summaryChips.innerHTML = data.chips.map(c => `<span class="chip">${c}</span>`).join('');
+    }
+
+    function renderModes() {
+      modeButtons.innerHTML = Object.entries(data.modes).map(([key, m]) => `
+        <button class="btn ${key === currentMode ? 'active' : ''}" data-mode="${key}">${m.label}</button>
+      `).join('');
+      modeButtons.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentMode = btn.dataset.mode;
+          renderModes();
+        });
+      });
+      modeSummary.innerHTML = data.modes[currentMode].summary
+        .map(([a, b]) => `<div><span>${a}</span><b>${b}</b></div>`).join('');
+    }
+
+    function renderKPIs() {
+      kpiGrid.innerHTML = data.kpis.map(k => `
+        <div class="kpi">
+          <div class="label">${k.label}</div>
+          <div class="value">${k.value}</div>
+          <div class="meta">${k.meta}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderTimeline() {
+      timelineEl.innerHTML = data.timeline.map(t => `
+        <div class="t-row">
+          <div class="t-date">${t.date}</div>
+          <div class="t-box">
+            <h3>${t.title}</h3>
+            <p>${t.body}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderBars(container, arr) {
+      container.innerHTML = arr.map(item => `
+        <div class="bar-row">
+          <div class="bar-head"><span>${item.label}</span><strong>${item.value}%</strong></div>
+          <div class="bar-bg"><div class="bar-fill" style="width:${item.value}%"></div></div>
+        </div>
+      `).join('');
+    }
+
+    function renderIssues() {
+      issuesTable.innerHTML = data.issues.map(i => {
+        const cls = i.severity === 'High' ? 'bad' : i.severity === 'Medium' ? 'warn' : 'good';
+        return `
+          <tr>
+            <td>${i.issue}</td>
+            <td><span class="pill ${cls}">${i.severity}</span></td>
+            <td>${i.remedy}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderList(container, arr) {
+      container.innerHTML = arr.map(([a,b]) => `<div><span>${a}</span><b>${b}</b></div>`).join('');
+    }
+
+    function drawRadar(canvasId, arr) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0,0,w,h);
+
+      const cx = w / 2;
+      const cy = h / 2 + 10;
+      const r = Math.min(w, h) * 0.33;
+      const steps = 5;
+      const angleStep = (Math.PI * 2) / arr.length;
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 1;
+      for (let s = 1; s <= steps; s++) {
+        ctx.beginPath();
+        arr.forEach((_, i) => {
+          const a = -Math.PI / 2 + i * angleStep;
+          const rr = (r * s) / steps;
+          const x = cx + Math.cos(a) * rr;
+          const y = cy + Math.sin(a) * rr;
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      arr.forEach((item, i) => {
+        const a = -Math.PI / 2 + i * angleStep;
+        const x = cx + Math.cos(a) * r;
+        const y = cy + Math.sin(a) * r;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+
+        ctx.fillStyle = '#9fb0d0';
+        ctx.font = '12px Inter, sans-serif';
+        const lx = cx + Math.cos(a) * (r + 22);
+        const ly = cy + Math.sin(a) * (r + 22);
+        ctx.textAlign = lx < cx - 10 ? 'right' : lx > cx + 10 ? 'left' : 'center';
+        ctx.fillText(item.label, lx, ly);
+      });
+
+      ctx.beginPath();
+      arr.forEach((item, i) => {
+        const a = -Math.PI / 2 + i * angleStep;
+        const rr = r * (item.value / 100);
+        const x = cx + Math.cos(a) * rr;
+        const y = cy + Math.sin(a) * rr;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(102,179,255,0.25)';
+      ctx.strokeStyle = '#66b3ff';
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+
+      arr.forEach((item, i) => {
+        const a = -Math.PI / 2 + i * angleStep;
+        const rr = r * (item.value / 100);
+        const x = cx + Math.cos(a) * rr;
+        const y = cy + Math.sin(a) * rr;
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#39d0c5';
+        ctx.fill();
+      });
+    }
+
+    function drawBarChart(canvasId, arr, color = '#66b3ff') {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0,0,w,h);
+
+      const pad = { top: 20, right: 20, bottom: 70, left: 50 };
+      const cw = w - pad.left - pad.right;
+      const ch = h - pad.top - pad.bottom;
+      const max = Math.max(...arr.map(a => a.value)) * 1.1;
+      const bw = cw / arr.length * 0.65;
+      const gap = cw / arr.length;
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.fillStyle = '#9fb0d0';
+      ctx.font = '12px Inter, sans-serif';
+
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.top + (ch / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(w - pad.right, y);
+        ctx.stroke();
+        const val = Math.round(max - (max / 4) * i);
+        ctx.fillText(String(val), 8, y + 4);
+      }
+
+      arr.forEach((item, i) => {
+        const x = pad.left + gap * i + (gap - bw) / 2;
+        const bh = (item.value / max) * ch;
+        const y = pad.top + ch - bh;
+
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, bw, bh);
+
+        ctx.fillStyle = '#e8eefc';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(item.value), x + bw / 2, y - 8);
+
+        ctx.save();
+        ctx.translate(x + bw / 2, h - 48);
+        ctx.rotate(-0.45);
+        ctx.fillStyle = '#9fb0d0';
+        ctx.fillText(item.label, 0, 0);
+        ctx.restore();
+      });
+    }
+
+    function drawProgress(canvasId, achieved, required) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0,0,w,h);
+
+      const x = 40;
+      const y = h / 2 - 20;
+      const width = w - 80;
+      const height = 32;
+
+      ctx.fillStyle = '#101726';
+      ctx.fillRect(x, y, width, height);
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.strokeRect(x, y, width, height);
+
+      ctx.fillStyle = '#66b3ff';
+      ctx.fillRect(x, y, width * (achieved / required), height);
+
+      ctx.fillStyle = '#e8eefc';
+      ctx.font = '700 18px Inter, sans-serif';
+      ctx.fillText(`Grant readiness ${achieved}%`, x, y - 18);
+
+      ctx.font = '12px Inter, sans-serif';
+      ctx.fillStyle = '#9fb0d0';
+      ctx.fillText('Alignment exists. Repeatable evidence, reporting, and participation depth still need work.', x, y + 58);
+    }
+
+    function renderVision() {
+      const sorted = [...data.vision].sort((a,b) =>
+        visionSort.value === 'desc' ? b.value - a.value : a.value - b.value
+      );
+      renderBars(visionBars, sorted);
+      drawRadar('radar', data.vision);
+    }
+
+    function init() {
+      renderChips();
+      renderModes();
+      renderKPIs();
+      renderTimeline();
+      renderVision();
+      renderBars(systemsBars, data.systems);
+      renderIssues();
+      renderList(socialSummary, data.social.summary);
+      renderList(grantSummary, data.grants.items);
+      renderList(needNow, data.needNow);
+      drawBarChart('socialChart', data.social.platforms, '#39d0c5');
+      drawProgress('grantChart', data.grants.achieved, data.grants.required);
+      drawBarChart('capacityChart', data.capacity, '#ffb454');
+
+      visionSort.addEventListener('change', renderVision);
+    }
+
+    init();
+  </script>
+</body>
+</html>
