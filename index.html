@@ -6,62 +6,176 @@
   <title>PLFC AGM Dashboard</title>
   <style>
     :root {
-      --bg: #0b1220;
-      --panel: #121a2b;
-      --panel-2: #18233a;
-      --text: #e8eefc;
-      --muted: #9fb0d0;
-      --accent: #66b3ff;
-      --accent-2: #39d0c5;
-      --warn: #ffb454;
-      --bad: #ff6b6b;
-      --good: #67e08a;
-      --border: rgba(255,255,255,0.08);
-      --shadow: 0 10px 30px rgba(0,0,0,0.28);
+      --bg: #eef3ff;
+      --bg-2: #dfe9ff;
+      --panel: rgba(255,255,255,0.78);
+      --panel-strong: rgba(255,255,255,0.92);
+      --text: #10203d;
+      --muted: #4f6286;
+      --blue: #4b6cff;
+      --blue-2: #6f88ff;
+      --aqua: #57d6e6;
+      --teal: #4fd3b2;
+      --border: rgba(75,108,255,0.14);
+      --shadow: 0 18px 50px rgba(49, 75, 154, 0.18);
+      --shadow-soft: 0 10px 24px rgba(73, 104, 204, 0.12);
+      --danger: #ff6b6b;
+      --warn: #f5a524;
+      --good: #24b47e;
     }
 
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(180deg, #09101c 0%, #0b1220 100%);
       color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(87,214,230,0.28), transparent 28%),
+        radial-gradient(circle at top left, rgba(75,108,255,0.24), transparent 35%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.45), transparent 16%),
+        radial-gradient(circle at 85% 12%, rgba(87,214,230,0.25), transparent 20%),
+        linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.18) 40%, transparent 60%);
+      opacity: 0.7;
     }
 
     .wrap {
-      max-width: 1400px;
+      position: relative;
+      max-width: 1380px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 16px;
+      z-index: 1;
+    }
+
+    .glass {
+      background: var(--panel);
+      backdrop-filter: blur(16px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
     }
 
     .hero {
       display: grid;
-      grid-template-columns: 1.6fr 1fr;
+      grid-template-columns: 1.5fr 1fr;
       gap: 16px;
       margin-bottom: 16px;
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
+      border-radius: 28px;
       padding: 18px;
     }
 
+    .hero-main {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(75,108,255,0.95), rgba(87,214,230,0.9));
+      color: white;
+      min-height: 210px;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -35% auto;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.38), rgba(255,255,255,0.04) 60%, transparent 70%);
+      filter: blur(8px);
+    }
+
+    .hero-main::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,0.18), transparent 35%),
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,0.25), transparent 20%);
+      pointer-events: none;
+    }
+
     h1, h2, h3, p { margin: 0; }
-    h1 { font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1.05; }
-    h2 { font-size: 1.05rem; margin-bottom: 12px; }
-    h3 { font-size: 0.95rem; }
-    .sub { color: var(--muted); margin-top: 10px; line-height: 1.4; }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    h1 {
+      font-size: clamp(2rem, 7vw, 3.4rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    h2 { font-size: 1.06rem; margin-bottom: 10px; }
+    h3 { font-size: 0.96rem; }
+    .sub {
+      color: rgba(255,255,255,0.92);
+      line-height: 1.45;
+      max-width: 740px;
+      position: relative;
+      z-index: 1;
+    }
+    .section-sub {
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 0.88rem;
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; position: relative; z-index: 1; }
     .chip {
-      font-size: 0.83rem;
-      padding: 7px 10px;
+      font-size: 0.82rem;
+      padding: 10px 13px;
       border-radius: 999px;
-      background: rgba(102,179,255,0.12);
-      border: 1px solid rgba(102,179,255,0.2);
-      color: #dcebff;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.28);
+      color: white;
+      font-weight: 700;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+
+    .nav-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .nav-btn, .btn, select {
+      appearance: none;
+      border: 1px solid transparent;
+      font: inherit;
+      font-weight: 800;
+      border-radius: 18px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      text-decoration: none;
+      color: var(--text);
+      background: rgba(255,255,255,0.88);
+      box-shadow: var(--shadow-soft);
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .nav-btn:active, .btn:active { transform: scale(0.985); }
+    .nav-btn:hover, .btn:hover, select:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(73, 104, 204, 0.16);
     }
 
     .kpi-grid {
@@ -70,15 +184,30 @@
       gap: 12px;
       margin-bottom: 16px;
     }
+
     .kpi {
-      background: var(--panel);
+      border-radius: 24px;
+      padding: 16px;
+      background: var(--panel-strong);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
     }
-    .kpi .label { color: var(--muted); font-size: 0.82rem; }
-    .kpi .value { font-size: clamp(1.4rem, 2vw, 2rem); font-weight: 800; margin-top: 6px; }
-    .kpi .meta { color: var(--muted); font-size: 0.78rem; margin-top: 4px; }
+
+    .kpi::after {
+      content: "";
+      position: absolute;
+      inset: auto -20px -20px auto;
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(75,108,255,0.12), transparent 65%);
+    }
+
+    .kpi .label { color: var(--muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+    .kpi .value { font-size: clamp(1.55rem, 4vw, 2.3rem); font-weight: 900; margin-top: 6px; color: var(--blue); }
+    .kpi .meta { color: var(--muted); font-size: 0.8rem; margin-top: 4px; line-height: 1.35; }
 
     .controls {
       display: flex;
@@ -87,22 +216,29 @@
       align-items: center;
       margin: 6px 0 16px;
     }
+
     .btn, select {
-      background: var(--panel);
-      border: 1px solid var(--border);
+      background: linear-gradient(180deg, #ffffff, #eef3ff);
+      border-color: rgba(75,108,255,0.18);
       color: var(--text);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font: inherit;
-      cursor: pointer;
+      padding: 14px 16px;
+      min-height: 52px;
+      box-shadow: var(--shadow-soft);
     }
-    .btn.active { outline: 2px solid rgba(102,179,255,0.4); }
+
+    .btn.active {
+      background: linear-gradient(135deg, var(--blue), var(--blue-2));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 18px 30px rgba(75,108,255,0.28);
+    }
 
     .grid {
       display: grid;
-      grid-template-columns: 1.15fr 1fr;
+      grid-template-columns: 1.1fr 1fr;
       gap: 16px;
     }
+
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -110,37 +246,46 @@
       margin-top: 16px;
     }
 
+    .section-card {
+      border-radius: 28px;
+      padding: 18px;
+    }
+
     .section-header {
       display: flex;
       justify-content: space-between;
       align-items: end;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 12px;
     }
-    .section-header small { color: var(--muted); }
 
     .timeline {
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
+
     .t-row {
       display: grid;
       grid-template-columns: 110px 1fr;
       gap: 12px;
       align-items: start;
     }
+
     .t-date {
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 0.88rem;
+      color: var(--blue);
+      font-weight: 900;
+      font-size: 0.9rem;
       padding-top: 3px;
     }
+
     .t-box {
-      background: var(--panel);
+      background: linear-gradient(180deg, rgba(255,255,255,0.84), rgba(244,248,255,0.88));
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: var(--shadow-soft);
     }
+
     .t-box p {
       color: var(--muted);
       line-height: 1.45;
@@ -149,96 +294,169 @@
     }
 
     .bars { display: grid; gap: 12px; }
-    .bar-row { display: grid; gap: 6px; }
-    .bar-head { display: flex; justify-content: space-between; font-size: 0.9rem; }
+    .bar-row { display: grid; gap: 7px; }
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
     .bar-bg {
-      height: 12px;
-      background: #0e1524;
-      border: 1px solid var(--border);
+      height: 16px;
+      background: linear-gradient(180deg, #edf2ff, #dfe8ff);
+      border: 1px solid rgba(75,108,255,0.14);
       border-radius: 999px;
       overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(72, 103, 190, 0.08);
     }
+
     .bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      background: linear-gradient(90deg, var(--blue), var(--aqua));
       border-radius: 999px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.35);
     }
 
     .table-wrap { overflow: auto; }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
+
     th, td {
-      padding: 10px 8px;
-      border-bottom: 1px solid var(--border);
+      padding: 12px 8px;
+      border-bottom: 1px solid rgba(75,108,255,0.12);
       text-align: left;
       white-space: nowrap;
     }
-    th { color: var(--muted); font-weight: 600; }
+
+    th {
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
     td:last-child, th:last-child { text-align: right; }
 
     .pill {
-      display: inline-block;
-      padding: 4px 8px;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
       border-radius: 999px;
       font-size: 0.78rem;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
+      font-weight: 800;
+      border: 1px solid transparent;
+      min-height: 32px;
     }
-    .good { color: var(--good); }
-    .warn { color: var(--warn); }
-    .bad { color: var(--bad); }
 
-    .radar-legend, .small-list { display: grid; gap: 8px; }
+    .good { color: var(--good); background: rgba(36,180,126,0.09); border-color: rgba(36,180,126,0.18); }
+    .warn { color: var(--warn); background: rgba(245,165,36,0.09); border-color: rgba(245,165,36,0.18); }
+    .bad { color: var(--danger); background: rgba(255,107,107,0.09); border-color: rgba(255,107,107,0.18); }
+
+    .small-list { display: grid; gap: 8px; }
     .small-list div {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(75,108,255,0.1);
       color: var(--muted);
+      font-size: 0.93rem;
     }
-    .small-list b { color: var(--text); font-weight: 600; }
+
+    .small-list b { color: var(--text); font-weight: 800; text-align: right; }
 
     canvas {
       width: 100%;
       max-width: 100%;
       display: block;
       background: transparent;
+      margin-top: 8px;
+      border-radius: 20px;
     }
 
     .footer-note {
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       margin-top: 14px;
       line-height: 1.5;
     }
 
-    @media (max-width: 1050px) {
-      .hero, .grid, .grid-2, .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .sticky-mobile-nav {
+      position: sticky;
+      bottom: 10px;
+      z-index: 15;
+      margin-top: 18px;
+      display: none;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 10px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 16px 40px rgba(73, 104, 204, 0.18);
+      border: 1px solid rgba(75,108,255,0.16);
     }
+
+    .sticky-mobile-nav a {
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 16px;
+      color: var(--text);
+      font-weight: 900;
+      background: linear-gradient(180deg, #ffffff, #edf3ff);
+      border: 1px solid rgba(75,108,255,0.14);
+      box-shadow: var(--shadow-soft);
+    }
+
+    @media (max-width: 1080px) {
+      .hero, .grid, .grid-2, .kpi-grid { grid-template-columns: 1fr 1fr; }
+      .nav-actions { grid-template-columns: repeat(3, 1fr); }
+    }
+
     @media (max-width: 760px) {
       .hero, .grid, .grid-2, .kpi-grid { grid-template-columns: 1fr; }
       .t-row { grid-template-columns: 1fr; }
-      .wrap { padding: 14px; }
+      .wrap { padding: 12px; }
+      .hero-main, .card, .section-card, .kpi { border-radius: 24px; }
+      .nav-actions { grid-template-columns: 1fr 1fr; }
+      .sticky-mobile-nav { display: grid; }
+      body { padding-bottom: 90px; }
+      h1 { font-size: 2.1rem; }
+      .btn, select, .nav-btn { min-height: 56px; font-size: 0.98rem; }
+      .small-list div { font-size: 0.9rem; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="hero">
-      <div class="card">
+      <div class="hero-main card">
         <h1>PLFC AGM Dashboard</h1>
-        <p class="sub">Point Lookout Fishing Club Inc. progress snapshot from formation through AGM prep. Interactive, single-file, GitHub-hostable.</p>
+        <p class="sub">Progress, reach, systems, constraints, remedies, and next-step readiness in one mobile-first page.</p>
         <div class="chips" id="summaryChips"></div>
+        <div class="nav-actions">
+          <a class="nav-btn" href="#timelineSection">Timeline</a>
+          <a class="nav-btn" href="#visionSection">Vision</a>
+          <a class="nav-btn" href="#socialSection">Reach</a>
+          <a class="nav-btn" href="#issuesSection">Issues</a>
+          <a class="nav-btn" href="#grantsSection">Grants</a>
+          <a class="nav-btn" href="#needSection">Need Now</a>
+        </div>
       </div>
-      <div class="card">
+      <div class="glass card">
         <div class="section-header">
           <div>
-            <h2>Mode</h2>
-            <small>Switch emphasis without changing the underlying data.</small>
+            <h2>View</h2>
+            <div class="section-sub">Tap a mode. These are styled as obvious buttons for easier navigation.</div>
           </div>
         </div>
         <div class="controls" id="modeButtons"></div>
@@ -248,24 +466,24 @@
 
     <section class="kpi-grid" id="kpiGrid"></section>
 
-    <section class="grid">
-      <div class="card">
+    <section class="grid" id="timelineSection">
+      <div class="glass section-card">
         <div class="section-header">
           <div>
             <h2>Timeline</h2>
-            <small>Major phases, outputs, and resets.</small>
+            <div class="section-sub">Formation, build, activation, slowdown, reset.</div>
           </div>
         </div>
         <div class="timeline" id="timeline"></div>
       </div>
 
-      <div class="card">
+      <div class="glass section-card" id="visionSection">
         <div class="section-header">
           <div>
             <h2>Vision Progress</h2>
-            <small>Estimated completion against original plan and constitution intent.</small>
+            <div class="section-sub">Estimated completion against original plan and constitution intent.</div>
           </div>
-          <select id="visionSort">
+          <select id="visionSort" aria-label="Sort vision progress">
             <option value="desc">Highest first</option>
             <option value="asc">Lowest first</option>
           </select>
@@ -275,23 +493,23 @@
       </div>
     </section>
 
-    <section class="grid-2">
-      <div class="card">
+    <section class="grid-2" id="socialSection">
+      <div class="glass section-card">
         <div class="section-header">
           <div>
             <h2>Social + Reach</h2>
-            <small>Platform footprint and paid campaign data.</small>
+            <div class="section-sub">Platform footprint and paid campaign data.</div>
           </div>
         </div>
         <canvas id="socialChart" width="600" height="330"></canvas>
         <div class="small-list" id="socialSummary"></div>
       </div>
 
-      <div class="card">
+      <div class="glass section-card">
         <div class="section-header">
           <div>
             <h2>Systems Built</h2>
-            <small>Operational backbone already in place.</small>
+            <div class="section-sub">Operational backbone already in place.</div>
           </div>
         </div>
         <div class="bars" id="systemsBars"></div>
@@ -299,12 +517,12 @@
       </div>
     </section>
 
-    <section class="grid-2">
-      <div class="card">
+    <section class="grid-2" id="issuesSection">
+      <div class="glass section-card">
         <div class="section-header">
           <div>
             <h2>Shortcomings → Remedies</h2>
-            <small>Constraint mapping.</small>
+            <div class="section-sub">Constraint mapping.</div>
           </div>
         </div>
         <div class="table-wrap">
@@ -321,11 +539,11 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="glass section-card" id="grantsSection">
         <div class="section-header">
           <div>
             <h2>Grant Readiness</h2>
-            <small>Where vision aligns and where proof is still thin.</small>
+            <div class="section-sub">Where vision aligns and where proof is still thin.</div>
           </div>
         </div>
         <canvas id="grantChart" width="600" height="300"></canvas>
@@ -334,28 +552,35 @@
     </section>
 
     <section class="grid-2">
-      <div class="card">
+      <div class="glass section-card">
         <div class="section-header">
           <div>
             <h2>Skills + Capacity</h2>
-            <small>Operational concentration by capability area.</small>
+            <div class="section-sub">Operational concentration by capability area.</div>
           </div>
         </div>
         <canvas id="capacityChart" width="600" height="300"></canvas>
         <div class="footer-note">This is a simplified operating view for AGM discussion, not a judgment of people.</div>
       </div>
 
-      <div class="card">
+      <div class="glass section-card" id="needSection">
         <div class="section-header">
           <div>
             <h2>Need Now</h2>
-            <small>Practical asks for the next cycle.</small>
+            <div class="section-sub">Practical asks for the next cycle.</div>
           </div>
         </div>
         <div class="small-list" id="needNow"></div>
-        <div class="footer-note">Long-term goal: a scalable fishing, events, education, conservation, and digital ecosystem anchored by PLFC and supported by repeatable systems.</div>
+        <div class="footer-note">Long-term goal: a sustainable fishing club with events, education, data, sponsors, and app-enabled growth.</div>
       </div>
     </section>
+
+    <nav class="sticky-mobile-nav" aria-label="Quick navigation">
+      <a href="#timelineSection">Timeline</a>
+      <a href="#socialSection">Reach</a>
+      <a href="#issuesSection">Issues</a>
+      <a href="#needSection">Need</a>
+    </nav>
   </div>
 
   <script>
@@ -525,7 +750,7 @@
 
     function renderModes() {
       modeButtons.innerHTML = Object.entries(data.modes).map(([key, m]) => `
-        <button class="btn ${key === currentMode ? 'active' : ''}" data-mode="${key}">${m.label}</button>
+        <button class="btn ${key === currentMode ? 'active' : ''}" data-mode="${key}" aria-pressed="${key === currentMode}">${m.label}</button>
       `).join('');
       modeButtons.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -539,7 +764,7 @@
 
     function renderKPIs() {
       kpiGrid.innerHTML = data.kpis.map(k => `
-        <div class="kpi">
+        <div class="kpi glass">
           <div class="label">${k.label}</div>
           <div class="value">${k.value}</div>
           <div class="meta">${k.meta}</div>
@@ -598,7 +823,7 @@
       const steps = 5;
       const angleStep = (Math.PI * 2) / arr.length;
 
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.strokeStyle = 'rgba(75,108,255,0.16)';
       ctx.lineWidth = 1;
       for (let s = 1; s <= steps; s++) {
         ctx.beginPath();
@@ -622,13 +847,17 @@
         ctx.lineTo(x, y);
         ctx.stroke();
 
-        ctx.fillStyle = '#9fb0d0';
+        ctx.fillStyle = '#4f6286';
         ctx.font = '12px Inter, sans-serif';
         const lx = cx + Math.cos(a) * (r + 22);
         const ly = cy + Math.sin(a) * (r + 22);
         ctx.textAlign = lx < cx - 10 ? 'right' : lx > cx + 10 ? 'left' : 'center';
         ctx.fillText(item.label, lx, ly);
       });
+
+      const gradient = ctx.createLinearGradient(0, 0, w, h);
+      gradient.addColorStop(0, 'rgba(75,108,255,0.28)');
+      gradient.addColorStop(1, 'rgba(87,214,230,0.22)');
 
       ctx.beginPath();
       arr.forEach((item, i) => {
@@ -639,9 +868,9 @@
         i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
       });
       ctx.closePath();
-      ctx.fillStyle = 'rgba(102,179,255,0.25)';
-      ctx.strokeStyle = '#66b3ff';
-      ctx.lineWidth = 2;
+      ctx.fillStyle = gradient;
+      ctx.strokeStyle = '#4b6cff';
+      ctx.lineWidth = 2.5;
       ctx.fill();
       ctx.stroke();
 
@@ -651,13 +880,13 @@
         const x = cx + Math.cos(a) * rr;
         const y = cy + Math.sin(a) * rr;
         ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = '#39d0c5';
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#57d6e6';
         ctx.fill();
       });
     }
 
-    function drawBarChart(canvasId, arr, color = '#66b3ff') {
+    function drawBarChart(canvasId, arr, color = '#4b6cff') {
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext('2d');
       const w = canvas.width;
@@ -671,8 +900,8 @@
       const bw = cw / arr.length * 0.65;
       const gap = cw / arr.length;
 
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-      ctx.fillStyle = '#9fb0d0';
+      ctx.strokeStyle = 'rgba(75,108,255,0.14)';
+      ctx.fillStyle = '#4f6286';
       ctx.font = '12px Inter, sans-serif';
 
       for (let i = 0; i <= 4; i++) {
@@ -690,17 +919,20 @@
         const bh = (item.value / max) * ch;
         const y = pad.top + ch - bh;
 
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, bw, bh);
+        const grad = ctx.createLinearGradient(x, y, x, y + bh);
+        grad.addColorStop(0, color === '#f5a524' ? '#f8bf57' : '#57d6e6');
+        grad.addColorStop(1, color);
+        ctx.fillStyle = grad;
+        roundRect(ctx, x, y, bw, bh, 12, true, false);
 
-        ctx.fillStyle = '#e8eefc';
+        ctx.fillStyle = '#10203d';
         ctx.textAlign = 'center';
         ctx.fillText(String(item.value), x + bw / 2, y - 8);
 
         ctx.save();
         ctx.translate(x + bw / 2, h - 48);
         ctx.rotate(-0.45);
-        ctx.fillStyle = '#9fb0d0';
+        ctx.fillStyle = '#4f6286';
         ctx.fillText(item.label, 0, 0);
         ctx.restore();
       });
@@ -714,25 +946,45 @@
       ctx.clearRect(0,0,w,h);
 
       const x = 40;
-      const y = h / 2 - 20;
+      const y = h / 2 - 22;
       const width = w - 80;
-      const height = 32;
+      const height = 36;
 
-      ctx.fillStyle = '#101726';
-      ctx.fillRect(x, y, width, height);
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-      ctx.strokeRect(x, y, width, height);
+      ctx.fillStyle = '#eaf0ff';
+      roundRect(ctx, x, y, width, height, 18, true, false);
+      ctx.strokeStyle = 'rgba(75,108,255,0.14)';
+      roundRect(ctx, x, y, width, height, 18, false, true);
 
-      ctx.fillStyle = '#66b3ff';
-      ctx.fillRect(x, y, width * (achieved / required), height);
+      const grad = ctx.createLinearGradient(x, y, x + width, y);
+      grad.addColorStop(0, '#4b6cff');
+      grad.addColorStop(1, '#57d6e6');
+      ctx.fillStyle = grad;
+      roundRect(ctx, x, y, width * (achieved / required), height, 18, true, false);
 
-      ctx.fillStyle = '#e8eefc';
+      ctx.fillStyle = '#10203d';
       ctx.font = '700 18px Inter, sans-serif';
       ctx.fillText(`Grant readiness ${achieved}%`, x, y - 18);
 
       ctx.font = '12px Inter, sans-serif';
-      ctx.fillStyle = '#9fb0d0';
-      ctx.fillText('Alignment exists. Repeatable evidence, reporting, and participation depth still need work.', x, y + 58);
+      ctx.fillStyle = '#4f6286';
+      ctx.fillText('Alignment exists. Repeatable evidence, reporting, and participation depth still need work.', x, y + 62);
+    }
+
+    function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+      if (width < 0) width = 0;
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
     }
 
     function renderVision() {
@@ -754,10 +1006,9 @@
       renderList(socialSummary, data.social.summary);
       renderList(grantSummary, data.grants.items);
       renderList(needNow, data.needNow);
-      drawBarChart('socialChart', data.social.platforms, '#39d0c5');
+      drawBarChart('socialChart', data.social.platforms, '#4b6cff');
       drawProgress('grantChart', data.grants.achieved, data.grants.required);
-      drawBarChart('capacityChart', data.capacity, '#ffb454');
-
+      drawBarChart('capacityChart', data.capacity, '#f5a524');
       visionSort.addEventListener('change', renderVision);
     }
 
